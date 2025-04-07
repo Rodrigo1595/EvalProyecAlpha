@@ -1,6 +1,82 @@
-<mvc:View controllerName="raccoon.devs.evalproyectos.controller.Principal"
+<mvc:View
+    controllerName="raccoon.devs.evalproyectos.controller.Principal"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-    </Page>
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:microchart="sap.suite.ui.microchart"
+    xmlns:m="sap.m"
+    xmlns="sap.m"
+>
+    <NavContainer
+        navigationFinished="onNavigationFinished"
+        id="navCon"
+        class="navContainerControl sapUiSmallMarginBottom"
+    >
+        <Page
+            id="p1"
+            title="Page 1"
+        >
+            <m:Text
+                text="Semantic colors in interactive mode"
+                class="sapUiSmallMargin"
+            >
+                <m:layoutData>
+                    <layout:GridData span="XL12 L12 M12 S12" />
+                </m:layoutData>
+            </m:Text>
+            <m:FlexBox
+                width="20rem"
+                height="10rem"
+                alignItems="Start"
+                justifyContent="SpaceBetween"
+            >
+                <m:items>
+                    <microchart:InteractiveDonutChart
+                        selectionChanged="onSelectionChanged"
+                        id="donutChart"
+                        displayedSegments="4"
+                    />
+                </m:items>
+            </m:FlexBox>
+
+
+			<!--  INICIO VIZCHART DONUT -->
+
+            <footer>
+                <OverflowToolbar>
+                    <Button text="Action 1" />
+                </OverflowToolbar>
+            </footer>
+        </Page>
+        <Page
+            id="p2"
+            title="Page 2"
+        >
+            <footer>
+                <OverflowToolbar>
+                    <Button text="Action 2" />
+                </OverflowToolbar>
+            </footer>
+        </Page>
+        <Page
+            id="p3"
+            title="Page 3"
+        >
+            <footer>
+                <OverflowToolbar>
+                    <Button text="Action 3" />
+                </OverflowToolbar>
+            </footer>
+        </Page>
+        <Page
+            id="p4"
+            title="Page 4"
+        >
+            <footer>
+                <OverflowToolbar>
+                    <Button text="Action 4" />
+                </OverflowToolbar>
+            </footer>
+        </Page>
+    </NavContainer>
 </mvc:View>
