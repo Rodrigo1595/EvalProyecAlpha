@@ -25,19 +25,20 @@ sap.ui.define([
                     //Agregar programáticamente cada uno de los productos como un microchart segment
                     let totalItems = 0
 
-                    data.results.forEach(element => {
-                        totalItems = totalItems + element.UnitsInStock
-                    });
 
-                    data.results.forEach(element => {
+                    for (let index = 0; index < 4; index++) {
+                        totalItems = totalItems + data.results[index].UnitsInStock
+                    }
+
+                    for (let index = 0; index < 4; index++) {
                         chart.addSegment(new InteractiveDonutChartSegment({
-                            label: element.ProductName,
-                            value: (element.UnitsInStock * 100) / totalItems,
-                            displayedValue: element.UnitsInStock + "%",
-                            color: element.UnitsInStock > 30 ? "Good" : element.UnitsInStock <= 10 ? "Critical" : "Error"
+                            label: data.results[index].ProductName,
+                            value: Math.round((data.results[index].UnitsInStock * 100)) / totalItems,
+                            displayedValue: Math.round((data.results[index].UnitsInStock * 100) / totalItems) + "%",
+                            color: data.results[index].UnitsInStock > 30 ? "Good" : data.results[index].UnitsInStock <= 10 ? "Critical" : "Error"
                         }));
-                    });
 
+                    }
 
 
                 },
@@ -46,6 +47,31 @@ sap.ui.define([
                 }
             })
         },
+
+        onPress: function (oEvent) {
+            MessageToast.show("Pressed on " + oEvent.getSource().getSender());
+        },
+
+        onActionPressed: function (oEvent) {
+            var sAction = oEvent.getSource().getKey();
+
+            if (sAction === "delete") {
+                this.removeItem(oEvent.getParameter("item"));
+                MessageToast.show("Item deleted");
+            } else {
+                MessageToast.show("Action \"" + sAction + "\" pressed.");
+            }
+        },
+
+        removeItem: function (oFeedListItem) {
+            var sFeedListItemBindingPath = oFeedListItem.getBindingContext().getPath();
+            var sFeedListItemIndex = sFeedListItemBindingPath.split("/").pop();
+            var aFeedCollection = this.getView().getModel().getProperty("/EntryCollection");
+
+            aFeedCollection.splice(sFeedListItemIndex, 1);
+            this.getView().getModel().setProperty("/EntryCollection", aFeedCollection);
+        },
+
 
         onNavigationFinished: function (evt) {
             var toPage = evt.getParameter("to");

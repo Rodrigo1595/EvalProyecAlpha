@@ -24,6 +24,10 @@
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "2.0"
         }
+      },
+      "JsonSource":{
+        "uri":"model/feed.json",
+        "type": "JSON"
       }
     },
     "crossNavigation": {
@@ -81,6 +85,11 @@
         "dataSource": "mainService",
         "preload": true,
         "settings": {}
+      },
+      "feed":{
+        "dataSource": "JsonSource",
+        "type": "sap.ui.model.json.JSONModel",
+        "preload": true
       }
     },
     "resources": {

@@ -6,6 +6,8 @@
     xmlns:microchart="sap.suite.ui.microchart"
     xmlns:m="sap.m"
     xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
 >
     <NavContainer
         navigationFinished="onNavigationFinished"
@@ -14,40 +16,119 @@
     >
         <Page
             id="p1"
-            title="Page 1"
+            title="{i18n>appTitle}"
+            floatingFooter="true"
         >
-            <m:Text
-                text="Semantic colors in interactive mode"
-                class="sapUiSmallMargin"
+            <f:Card
+                class="sapUiMediumMargin"
+                width="300px"
             >
-                <m:layoutData>
-                    <layout:GridData span="XL12 L12 M12 S12" />
-                </m:layoutData>
-            </m:Text>
-            <m:FlexBox
-                width="20rem"
-                height="10rem"
-                alignItems="Start"
-                justifyContent="SpaceBetween"
-            >
-                <m:items>
-                    <microchart:InteractiveDonutChart
-                        selectionChanged="onSelectionChanged"
-                        id="donutChart"
-                        displayedSegments="4"
+                <f:header>
+                    <card:Header
+                        title="Productos mas vendidos"
+                        subtitle=""
+                        iconSrc="sap-icon://add-product"
                     />
-                </m:items>
-            </m:FlexBox>
+                </f:header>
+                <f:content>
+                    <m:FlexBox
+                        alignItems="Start"
+                        justifyContent="SpaceBetween"
+                    >
+                        <m:items>
+                            <microchart:InteractiveDonutChart
+                                selectionChanged="onSelectionChanged"
+                                id="donutChart"
+                                displayedSegments="4"
+                                errorMessageTitle="Áun no se han cargado datos"
+                                errorMessage="Proceso de carga..."
+                            />
+                        </m:items>
+                    </m:FlexBox>
+                </f:content>
+            </f:Card>
 
+            <f:Card
+                class="sapUiMediumMargin"
+                width="300px"
+            >
+                <f:header>
+                    <card:Header
+                        title="Project Cloud Transformation"
+                        subtitle="Revenue per Product | EUR"
+                    />
+                </f:header>
+                <f:content>
+                    <List
+                        class="sapUiSmallMarginBottom"
+                        showSeparators="None"
+                        items="{
+					path: 'products>/productItems'
+				}"
+                    >
+                        <CustomListItem>
+                            <HBox
+                                alignItems="Center"
+                                justifyContent="SpaceBetween"
+                            >
+                                <VBox
+                                    class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom"
+                                >
+                                    <Title
+                                        level="H3"
+                                        text="{products>title}"
+                                    />
+                                    <Text text="{products>subtitle}" />
+                                </VBox>
+                                <ObjectStatus
+                                    class="sapUiTinyMargin sapUiSmallMarginEnd"
+                                    text="{products>revenue}"
+                                    state="{products>statusSchema}"
+                                />
+                            </HBox>
+                        </CustomListItem>
+                    </List>
+                </f:content>
+            </f:Card>
 
-			<!--  INICIO VIZCHART DONUT -->
+            <layout:VerticalLayout
+                class="sapUiContentPadding"
+                width="100%"
+            >
+                <layout:content>
+                    <List
+                        headerText="Feed Entries"
+                        items="{feed>/EntryCollection}"
+                    >
+                        <FeedListItem
+                            sender="{feed>Author}"
+                            icon="{feed>AuthorPicUrl}"
+                            senderPress="onPress"
+                            iconPress="onPress"
+                            info="{feed>Type}"
+                            timestamp="{feed>Date}"
+                            text="{feed>Text}"
+                            convertLinksToAnchorTags="All"
+                            actions="{path: 'feed>Actions', templateShareable: false}"
+                        >
+                            <FeedListItemAction
+                                text="{feed>Text}"
+                                icon="{feed>Icon}"
+                                key="{feed>Key}"
+                                press="onActionPressed"
+                            />
+                        </FeedListItem>
+                    </List>
+                </layout:content>
+            </layout:VerticalLayout>
 
             <footer>
                 <OverflowToolbar>
-                    <Button text="Action 1" />
+                    <Button text="Boton Contacto" type="Emphasized"/>
                 </OverflowToolbar>
             </footer>
         </Page>
+
         <Page
             id="p2"
             title="Page 2"
@@ -58,6 +139,7 @@
                 </OverflowToolbar>
             </footer>
         </Page>
+
         <Page
             id="p3"
             title="Page 3"
