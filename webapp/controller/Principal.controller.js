@@ -2,14 +2,39 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel",
-    "sap/suite/ui/microchart/InteractiveDonutChartSegment"
+    "sap/suite/ui/microchart/InteractiveDonutChartSegment",
+    "sap/ui/core/ResizeHandler"
 
-], (Controller, MessageToast, JSONModel, InteractiveDonutChartSegment) => {
+], (Controller, MessageToast, JSONModel, InteractiveDonutChartSegment, ResizeHandler) => {
     "use strict";
 
     return Controller.extend("raccoon.devs.evalproyectos.controller.Principal", {
+        _resizeHandlerId: null, // Guarda el handler para eliminarlo luego si es necesario
+
         onInit() {
             this.cargarProductos()
+
+            var oGrid = this.getView().byId("demoGrid");
+
+            if (oGrid) {
+                // Registrar el ResizeHandler una vez, escuchará siempre los cambios de tamaño
+                this._resizeHandlerId = ResizeHandler.register(oGrid, function (oEvent) {
+                    var iWidth = oEvent.size.width;
+
+                    if (iWidth <= 480) {
+                        // Pantalla extra pequeña (XS)
+                        oGrid.removeStyleClass("sapUiSmallMargin");
+                        oGrid.addStyleClass("sapUiTinyMargin");
+
+                    } else {
+                        // Pantalla normal o grande
+                        oGrid.removeStyleClass("sapUiTinyMargin");
+                        oGrid.addStyleClass("sapUiSmallMargin");
+
+                    }
+                });
+            }
+
         },
 
         cargarProductos: async function () {
@@ -46,6 +71,10 @@ sap.ui.define([
                     console.log(error)
                 }
             })
+
+            //Refrescar insumos
+            
+
         },
 
         onPress: function (oEvent) {
@@ -82,8 +111,7 @@ sap.ui.define([
             var navCon = this.byId("navCon");
             var target = evt.getSource().data("target");
             if (target) {
-                var animation = this.byId("animationSelect").getSelectedKey();
-                navCon.to(this.byId(target), animation);
+                navCon.to(this.byId(target), "slide");
             } else {
                 navCon.back();
             }
@@ -91,15 +119,46 @@ sap.ui.define([
         press: function (oEvent) {
             MessageToast.show("The Interactive Donut Chart is pressed.");
         },
-
-        /**
-         * Creates a message for a selection change event on the chart
-         *
-         * @private
-         */
         onSelectionChanged: function (oEvent) {
             var oSegment = oEvent.getParameter("segment");
             MessageToast.show("The selection changed: " + oSegment.getLabel() + " " + ((oSegment.getSelected()) ? "selected" : "not selected"));
+        },
+        onRevealGrid: function () {
+            RevealGrid.toggle("demoGrid", this.getView());
+        },
+
+        onExit: function () {
+            RevealGrid.destroy("demoGrid", this.getView());
+        },
+
+        onPress: function (oEvent) {
+            MessageToast.show("Boton navegar a próxima aplicación " + oEvent.getSource().getMetadata().getName());
+        },
+
+        handleSwipe: function (evt) {   // register swipe event
+            var oSwipeContent = evt.getParameter("swipeContent"), // get swiped content from event
+                oSwipeDirection = evt.getParameter("swipeDirection"); // get swiped direction from event
+            var msg = "";
+
+            if (oSwipeDirection === "BeginToEnd") {
+                // List item is approved, change swipeContent(button) text to Disapprove and type to Reject
+                oSwipeContent.setText("Approve").setType("Accept");
+                msg = 'Swipe direction is from the beginning to the end (left ro right in LTR languages)';
+
+            } else {
+                // List item is not approved, change swipeContent(button) text to Approve and type to Accept
+                oSwipeContent.setText("Disapprove").setType("Reject");
+                msg = 'Swipe direction is from the end to the beginning (right to left in LTR languages)';
+            }
+            MessageToast.show(msg);
+        },
+
+        handleReject: function (evt) {
+            var oList = evt.getSource().getParent();
+            oList.removeAggregation("items", oList.getSwipedItem());
+            oList.swipeOut();
         }
+
+
     });
 });

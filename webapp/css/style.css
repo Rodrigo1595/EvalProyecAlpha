@@ -1,1 +1,13 @@
 /* Enter your custom styles here */
+.floatingButton {
+    position: fixed;
+    bottom: 4rem;
+    right: 2rem;
+    z-index: 999;
+}
+
+.bigFooterText {
+    font-size: 1.2rem; /* O prueba con 2rem si quieres aún más */
+    font-weight: bold;
+    color: #2c3e50; /* Azul gris elegante */
+}

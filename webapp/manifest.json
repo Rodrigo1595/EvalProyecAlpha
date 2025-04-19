@@ -25,8 +25,20 @@
           "odataVersion": "2.0"
         }
       },
-      "JsonSource":{
-        "uri":"model/feed.json",
+      "JsonSource": {
+        "uri": "model/feed.json",
+        "type": "JSON"
+      },
+      "productsJSON": {
+        "uri": "model/products.json",
+        "type": "JSON"
+      },
+      "citiesJSON": {
+        "uri": "model/cities.json",
+        "type": "JSON"
+      },
+      "colleccionProductosJSON": {
+        "uri": "model/coleccionProductos.json",
         "type": "JSON"
       }
     },
@@ -86,8 +98,23 @@
         "preload": true,
         "settings": {}
       },
-      "feed":{
+      "feed": {
         "dataSource": "JsonSource",
+        "type": "sap.ui.model.json.JSONModel",
+        "preload": true
+      },
+      "products": {
+        "dataSource": "productsJSON",
+        "type": "sap.ui.model.json.JSONModel",
+        "preload": true
+      },
+      "cities": {
+        "dataSource": "citiesJSON",
+        "type": "sap.ui.model.json.JSONModel",
+        "preload": true
+      },
+      "colleccionProductos": {
+        "dataSource": "colleccionProductosJSON",
         "type": "sap.ui.model.json.JSONModel",
         "preload": true
       }
