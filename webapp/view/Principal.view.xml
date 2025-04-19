@@ -9,6 +9,9 @@
     xmlns:f="sap.f"
     xmlns:card="sap.f.cards"
     xmlns:w="sap.ui.integration.widgets"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:viz.data="sap.viz.ui5.data"
     height="100%"
 >
     <NavContainer
@@ -71,16 +74,6 @@
                         </m:FlexBox>
                     </f:content>
                 </f:Card>
-                <w:Card
-                    manifest="test-resources/sap/f/demokit/sample/GridContainer/cardManifest.json"
-                >
-                    <w:layoutData>
-                        <f:GridContainerItemLayoutData
-                            minRows="3"
-                            columns="4"
-                        />
-                    </w:layoutData>
-                </w:Card>
 
                 <f:Card>
                     <f:layoutData>
@@ -124,6 +117,28 @@
                         </List>
                     </f:content>
                 </f:Card>
+
+                <GenericTile
+                    header="Revisar detalle empresa"
+                    subheader="Anual por producto"
+                    press="handleNav"
+                >
+                    <layoutData>
+                        <f:GridContainerItemLayoutData
+                            minRows="2"
+                            columns="2"
+                        />
+                    </layoutData>
+                    <TileContent>
+                        <ImageContent src="sap-icon://detail-view" />
+                    </TileContent>
+                    <customData>
+                        <core:CustomData
+                            key="target"
+                            value="p4"
+                        />
+                    </customData>
+                </GenericTile>
 
                 <GenericTile
                     header="Aceptar/rechazar Insumos"
@@ -207,21 +222,6 @@
                         </VBox>
                     </f:content>
                 </f:Card>
-
-                <GenericTile
-                    header="Travel and Expenses"
-                    subheader="Access Concur"
-                >
-                    <layoutData>
-                        <f:GridContainerItemLayoutData
-                            minRows="2"
-                            columns="2"
-                        />
-                    </layoutData>
-                    <TileContent>
-                        <ImageContent src="sap-icon://travel-expense" />
-                    </TileContent>
-                </GenericTile>
 
                 <GenericTile
                     header="Success Map"
@@ -393,8 +393,150 @@
         </Page>
         <Page
             id="p4"
-            title="Page 4"
+            title="Ganancias anual de empresa vs Costo"
+            navButtonPress="handleNav"
+            showNavButton="true"
+            showHeader="true"
         >
+            <layout:FixFlex
+                id='chartFixFlex'
+                minFlexSize="250"
+            >
+                <!--Below is the setting panel -->
+                <layout:fixContent>
+                    <Panel
+                        id='settingsPanel'
+                        class="panelStyle"
+                        expandable="true"
+                        expanded="true"
+                        headerText="Settings"
+                        width="auto"
+                    >
+                        <content>
+                            <HBox class='settingsHBox'>
+                                <VBox class='settingsBox'>
+                                    <Label
+                                        text="{/dataset/name}"
+                                        design="Bold"
+                                        class='settingsLabel'
+                                    />
+                                    <RadioButtonGroup
+                                        id='datasetRadioGroup'
+                                        buttons="{path: '/dataset/values'}"
+                                    >
+                                        <buttons>
+                                            <RadioButton
+                                                class='settingsRadio'
+                                                text="{name}"
+                                                select="onDatasetSelected"
+                                            />
+                                        </buttons>
+                                    </RadioButtonGroup>
+                                </VBox>
+                                <VBox class='settingsBox'>
+                                    <Label
+                                        text='{/series/name}'
+                                        design="Bold"
+                                        class='settingsLabel'
+                                    />
+                                    <RadioButtonGroup
+                                        id='seriesRadioGroup'
+                                        buttons="{path: '/series/values'}"
+                                    >
+                                        <buttons>
+                                            <RadioButton
+                                                class='settingsRadio'
+                                                text="{name}"
+                                                select='onSeriesSelected'
+                                            />
+                                        </buttons>
+                                    </RadioButtonGroup>
+                                </VBox>
+                                <VBox class='settingsBox'>
+                                    <Label
+                                        text='{/dataLabel/name}'
+                                        design="Bold"
+                                        class='settingsLabel'
+                                    />
+                                    <Switch
+                                        class='settingsSwitch'
+                                        state="{/dataLabel/defaultState}"
+                                        change='onDataLabelChanged'
+                                    >
+                                        <layoutData>
+                                            <FlexItemData growFactor="1" />
+                                        </layoutData>
+                                    </Switch>
+                                </VBox>
+                                <VBox class='settingsBox'>
+                                    <Label
+                                        text='{/axisTitle/name}'
+                                        design="Bold"
+                                        class='settingsLabel'
+                                    />
+                                    <Switch
+                                        class='settingsSwitch'
+                                        state="{/axisTitle/defaultState}"
+                                        change='onAxisTitleChanged'
+                                    >
+                                        <layoutData>
+                                            <FlexItemData growFactor="1" />
+                                        </layoutData>
+                                    </Switch>
+                                </VBox>
+                            </HBox>
+                        </content>
+                    </Panel>
+                </layout:fixContent>
+                <layout:flexContent>
+                    <viz:VizFrame
+                        id="idVizFrame"
+                        uiConfig="{applicationSet:'fiori'}"
+                        height='100%'
+                        width="100%"
+                        vizType='bar'
+                    >
+                        <viz:dataset>
+                            <viz.data:FlattenedDataset data="{/milk}">
+                                <viz.data:dimensions>
+                                    <viz.data:DimensionDefinition
+                                        name="Store Name"
+                                        value="{Store Name}"
+                                    />
+                                </viz.data:dimensions>
+                                <viz.data:measures>
+                                    <viz.data:MeasureDefinition
+                                        name="Revenue"
+                                        value="{Revenue}"
+                                    />
+                                    <viz.data:MeasureDefinition
+                                        name="Cost"
+                                        value="{Cost}"
+                                    />
+                                </viz.data:measures>
+                            </viz.data:FlattenedDataset>
+                        </viz:dataset>
+
+                        <viz:feeds>
+                            <viz.feeds:FeedItem
+                                id='valueAxisFeed'
+                                uid="valueAxis"
+                                type="Measure"
+                                values="Revenue"
+                            />
+                            <viz.feeds:FeedItem
+                                uid="categoryAxis"
+                                type="Dimension"
+                                values="Store Name"
+                            />
+                        </viz:feeds>
+                        <viz:dependents>
+                            <viz:Popover id="idPopOver" />
+                        </viz:dependents>
+                    </viz:VizFrame>
+                </layout:flexContent>
+            </layout:FixFlex>
+
             <footer>
                 <OverflowToolbar>
                     <ToolbarSpacer />
